@@ -1,0 +1,49 @@
+version: '3.7'
+
+services:
+  meilisearch:
+      image: getmeili/meilisearch:v0.26.1
+      restart: always
+      volumes:
+        - ./data/ms:/data.ms
+      environment:
+        MEILI_HTTP_ADDR: 0.0.0.0:7700
+        MEILI_MASTER_KEY: key
+        MEILI_NO_ANALYTICS: "true"
+
+  telegram:
+    image: cr.averyan.ru/memesearch/bots/telegram:edge
+    restart: always
+    environment:
+      TOKEN: ${TG_TOKEN}
+      API_BASE: 'http://backend:8080'
+      API_PICS: 'http://backend:8080/static/images'
+
+  frontend:
+    image: cr.averyan.ru/memesearch/site:edge
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.memesearch-frontend.loadbalancer.server.port=3000
+      - traefik.http.routers.memesearch-frontend.rule=Host(`ms.averyan.ru`) && PathPrefix(`/`)
+      - traefik.http.routers.memesearch-frontend.entrypoints=websecure
+      - traefik.http.routers.memesearch-frontend.service=memesearch-frontend
+
+  backend:
+    image: cr.averyan.ru/memesearch/backend:edge
+    restart: always
+    environment:
+      MEILI_URL: http://meilisearch:7700
+      MEILI_MASTER_KEY: key
+      CORS_ORIGIN: https://ms.averyan.ru
+      IMAGES_DIR: /data/images
+    volumes:
+      - ./data/storage:/data
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.memesearch-backend.loadbalancer.server.port=8080
+      - traefik.http.routers.memesearch-backend.rule=Host(`ms.averyan.ru`) && PathPrefix(`/api`)
+      - traefik.http.middlewares.memesearch-backend-prefix.stripprefix.prefixes=/api
+      - traefik.http.routers.memesearch-backend.middlewares=memesearch-backend-prefix
+      - traefik.http.routers.memesearch-backend.entrypoints=websecure
+      - traefik.http.routers.memesearch-backend.service=memesearch-backend
