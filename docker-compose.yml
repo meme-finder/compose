@@ -2,14 +2,14 @@ version: '3.7'
 
 services:
   meilisearch:
-      image: getmeili/meilisearch:v0.26.1
-      restart: always
-      volumes:
-        - ./data/ms:/data.ms
-      environment:
-        MEILI_HTTP_ADDR: 0.0.0.0:7700
-        MEILI_MASTER_KEY: key
-        MEILI_NO_ANALYTICS: "true"
+    image: getmeili/meilisearch:v0.26.1
+    restart: always
+    volumes:
+      - ./data/ms:/data.ms
+    environment:
+      MEILI_HTTP_ADDR: 0.0.0.0:7700
+      MEILI_MASTER_KEY: key
+      MEILI_NO_ANALYTICS: "true"
 
   telegram:
     image: cr.averyan.ru/memesearch/bots/telegram:edge
