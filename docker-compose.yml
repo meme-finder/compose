@@ -17,7 +17,7 @@ services:
     environment:
       TOKEN: ${TG_TOKEN}
       API_BASE: 'http://backend:8080'
-      API_PICS: 'http://backend:8080/static/images'
+      API_PICS: 'http://nginx-static/images'
 
   frontend:
     image: cr.averyan.ru/meme-finder/site:edge
