@@ -37,6 +37,8 @@ services:
       MEILI_MASTER_KEY: key
       CORS_ORIGIN: https://memefinder.ru
       IMAGES_DIR: /data/images
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
+      COOKIE_SECURE: 'true'
     volumes:
       - ./data/storage:/data
     labels:
