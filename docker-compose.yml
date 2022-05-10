@@ -39,6 +39,7 @@ services:
       IMAGES_DIR: /data/images
       ADMIN_TOKEN: ${ADMIN_TOKEN}
       COOKIE_SECURE: 'true'
+      TEXT_RECOGNIZER_URL: http://text-recognizer:8080
     volumes:
       - ./data/storage:/data
     labels:
@@ -49,6 +50,10 @@ services:
       - traefik.http.routers.memesearch-backend.middlewares=memesearch-backend-prefix
       - traefik.http.routers.memesearch-backend.entrypoints=websecure
       - traefik.http.routers.memesearch-backend.service=memesearch-backend
+
+  text-recognizer:
+    image: cr.averyan.ru/meme-finder/text-recognizer:edge
+    restart: always
 
   nginx-static:
     image: cr.averyan.ru/meme-finder/nginx-static:edge
